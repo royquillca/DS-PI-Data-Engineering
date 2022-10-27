@@ -57,6 +57,42 @@ def limpieza_producto(df):
 #-------------------------------#
 # Creacion de la Tabla Producto #
 #-------------------------------#
+def crear_tabla_producto(tb_name):
+    tb_name='producto'
+    try:
+        conn = msql.connect(
+            host=host,
+            user=user, 
+            password=password)
+
+        if conn.is_connected():
+            cursor = conn.cursor()
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name};")
+            cursor.execute("USE henrypi;")
+            record = cursor.fetchone()
+            #
+            print("Estas conectado a la Base de Datos: ", db_name)
+            #
+            cursor.execute(f'DROP TABLE IF EXISTS `{tb_name}`;')
+            print(f'Creando la tabla {tb_name}....')
+            #
+            cursor.execute(f"""
+            CREATE TABLE IF NOT EXISTS `{tb_name}` (
+                `idProducto`		VARCHAR(20),
+                `marca` 			VARCHAR(50),
+                `nombre`			VARCHAR(150),
+                `presentacion`		VARCHAR(150),
+                `categoria1`		VARCHAR(50),
+                `categoria2`		VARCHAR(50),
+                `categoria3`		VARCHAR(50),
+                PRIMARY KEY (`idProducto`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+            """)
+            print("Tabla creada exitosamente....")
+    except Error as e:
+        print("Error al conectarse a MySQL", e)
+
+
 def leer_archivo():
     file_path = input('Ingrese el nombre del archivo. Ejemplo archivo.extensio: ')    
     extension_archivo = os.path.basename(file_path).split('.')[1]
@@ -79,7 +115,7 @@ def main():
             cursor.execute("USE henrypi;")
             record = cursor.fetchone()
             #
-            print("You're connected to database: ", db_name)
+            print("Estas conectado a la Base de Datos: ", db_name)
             #
             cursor.execute('DROP TABLE IF EXISTS `producto`;')
             print('Creating table....')
@@ -101,7 +137,7 @@ def main():
             print("Los registros se han cargado exitosamente....")
             
     except Error as e:
-        print("Error while connecting to MySQL", e)
+        print("Error al conectarse a MySQL", e)
     
 if __name__ == '__main__':
     main()
